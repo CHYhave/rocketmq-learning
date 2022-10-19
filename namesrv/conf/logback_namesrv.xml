@@ -65,27 +65,27 @@
         </encoder>
     </appender>
 
-    <logger name="RocketmqNamesrv" additivity="false">
+    <logger name="RocketmqNamesrv" additivity="true">
         <level value="INFO"/>
         <appender-ref ref="RocketmqNamesrvAppender"/>
     </logger>
 
-    <logger name="RocketmqCommon" additivity="false">
+    <logger name="RocketmqCommon" additivity="true">
         <level value="INFO"/>
         <appender-ref ref="RocketmqNamesrvAppender"/>
     </logger>
 
-    <logger name="RocketmqRemoting" additivity="false">
+    <logger name="RocketmqRemoting" additivity="true">
         <level value="INFO"/>
         <appender-ref ref="RocketmqNamesrvAppender"/>
     </logger>
 
-    <logger name="RocketmqNamesrvConsole" additivity="false">
+    <logger name="RocketmqNamesrvConsole" additivity="true">
         <level value="INFO"/>
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="RocketmqController" additivity="false">
+    <logger name="RocketmqController" additivity="true">
         <level value="INFO"/>
         <appender-ref ref="RocketmqNamesrvAppender"/>
     </logger>

@@ -53,7 +53,9 @@ public class NamesrvStartup {
     private static ControllerConfig controllerConfig = null;
 
     public static void main(String[] args) {
+        // 启动NameSrvController
         main0(args);
+        // 启动ControllerManager
         controllerManagerMain();
     }
 
