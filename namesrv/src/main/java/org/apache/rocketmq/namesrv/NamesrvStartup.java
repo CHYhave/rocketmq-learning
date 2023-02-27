@@ -54,6 +54,8 @@ public class NamesrvStartup {
 
     public static void main(String[] args) {
         // 启动NameSrvController
+        //  1. 解析配置文件
+        //  2. 创建NameSrvController TODO Figure out how controller work!
         main0(args);
         // 启动ControllerManager
         controllerManagerMain();
