@@ -57,7 +57,8 @@ public class NamesrvStartup {
         //  1. 解析配置文件
         //  2. 创建NameSrvController TODO Figure out how controller work!
         main0(args);
-        // 启动ControllerManager
+        // 启动ControllerManager, ControllerManager用于选主,详细文档可以查看 /docs/cn/controller/quick_start.md
+        // 有点像sentinel
         controllerManagerMain();
     }
 
@@ -158,7 +159,7 @@ public class NamesrvStartup {
     }
 
     public static NamesrvController createNamesrvController() {
-
+        // 注意这边的NamesrvController
         final NamesrvController controller = new NamesrvController(namesrvConfig, nettyServerConfig, nettyClientConfig);
         // remember all configs to prevent discard
         controller.getConfiguration().registerConfig(properties);
@@ -189,6 +190,12 @@ public class NamesrvStartup {
 
     public static ControllerManager createAndStartControllerManager() throws Exception {
         ControllerManager controllerManager = createControllerManager();
+        /**
+         * 实际上调用ControllerManager
+         * initialize()
+         * start()
+         * 这两个函数
+         */
         start(controllerManager);
         String tip = "The ControllerManager boot success. serializeType=" + RemotingCommand.getSerializeTypeConfigInThisServer();
         log.info(tip);
@@ -197,6 +204,7 @@ public class NamesrvStartup {
     }
 
     public static ControllerManager createControllerManager() throws Exception {
+        // 好家伙直接Clone一个省时省力
         NettyServerConfig controllerNettyServerConfig = (NettyServerConfig) nettyServerConfig.clone();
         ControllerManager controllerManager = new ControllerManager(controllerConfig, controllerNettyServerConfig, nettyClientConfig);
         // remember all configs to prevent discard

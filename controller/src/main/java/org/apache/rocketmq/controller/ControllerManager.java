@@ -66,6 +66,9 @@ public class ControllerManager {
 
     public ControllerManager(ControllerConfig controllerConfig, NettyServerConfig nettyServerConfig,
                              NettyClientConfig nettyClientConfig) {
+        /**
+         * 对比NameSrvController
+         */
         this.controllerConfig = controllerConfig;
         this.nettyServerConfig = nettyServerConfig;
         this.nettyClientConfig = nettyClientConfig;
@@ -77,6 +80,8 @@ public class ControllerManager {
 
     public boolean initialize() {
         this.controllerRequestThreadPoolQueue = new LinkedBlockingQueue<>(this.controllerConfig.getControllerRequestThreadPoolQueueCapacity());
+        // TODO 1 疑问 为什么这边重载了newTaskFor方法? 为什么不用原来的Callable
+        // 查看了FutureTaskExt这个类后发现，里面重写了一个方法用来返回Runnable对象
         this.controllerRequestExecutor = new ThreadPoolExecutor(
                 this.controllerConfig.getControllerThreadPoolNums(),
                 this.controllerConfig.getControllerThreadPoolNums(),
@@ -89,6 +94,7 @@ public class ControllerManager {
                 return new FutureTaskExt<>(runnable, value);
             }
         };
+        // 该类就是用来检测Broker是否心跳超时，超时就摘除，默认检查间隔5秒
         this.heartbeatManager = new DefaultBrokerHeartbeatManager(this.controllerConfig);
         if (StringUtils.isEmpty(this.controllerConfig.getControllerDLegerPeers())) {
             throw new IllegalArgumentException("Attribute value controllerDLegerPeers of ControllerConfig is null or empty");
@@ -96,6 +102,8 @@ public class ControllerManager {
         if (StringUtils.isEmpty(this.controllerConfig.getControllerDLegerSelfId())) {
             throw new IllegalArgumentException("Attribute value controllerDLegerSelfId of ControllerConfig is null or empty");
         }
+        // 重头戏来了负责选主的Controller
+        // TODO 要看 暂时先不看
         this.controller = new DLedgerController(this.controllerConfig, this.heartbeatManager::isBrokerActive,
                 this.nettyServerConfig, this.nettyClientConfig, this.brokerHousekeepingService,
                 new DefaultElectPolicy(this.heartbeatManager::isBrokerActive, this.heartbeatManager::getBrokerLiveInfo));

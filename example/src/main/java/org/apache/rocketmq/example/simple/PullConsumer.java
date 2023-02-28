@@ -44,7 +44,6 @@ public class PullConsumer {
         topics.add("TopicTest");
         consumer.setRegisterTopics(topics);
         consumer.start();
-
         ExecutorService executors = Executors.newFixedThreadPool(topics.size(), new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {

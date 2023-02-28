@@ -101,12 +101,24 @@ public class NamesrvController {
     }
 
     public boolean initialize() {
+        // 加载KV配置
         loadConfig();
+        // 初始化网络组件，NettyServer NettyClient，但没有启动
         initiateNetworkComponents();
+        // 初始化线程池
+        // 1. 默认线程池
+        // 2. ClientRequest处理线程池
         initiateThreadExecutors();
+        // 将线程池注入到对应的server中
         registerProcessor();
+        // 启动3个定时任务
+        // 1. 扫描非活跃Broker
+        // 2. 打印NameSrv KV信息
+        // 3. 打印NameSrv 水位
         startScheduleService();
+        // 初始化SSL上下文
         initiateSslContext();
+        // 向remoteServer注册一个ZoneRouteRPCHook
         initiateRpcHooks();
         return true;
     }
