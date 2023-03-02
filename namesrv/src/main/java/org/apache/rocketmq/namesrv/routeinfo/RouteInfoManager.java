@@ -262,6 +262,7 @@ public class RouteInfoManager {
                 isMinBrokerIdChanged = true;
             }
 
+            // 这里的主从更换没有看明白 TODO
             //Switch slave to master: first remove <1, IP:PORT> in namesrv, then add <0, IP:PORT>
             //The same IP:PORT must only have one record in brokerAddrTable
             brokerAddrsMap.entrySet().removeIf(item -> null != brokerAddr && brokerAddr.equals(item.getValue()) && brokerId != item.getKey());
@@ -768,6 +769,7 @@ public class RouteInfoManager {
                 long last = next.getValue().getLastUpdateTimestamp();
                 long timeoutMillis = next.getValue().getHeartbeatTimeoutMillis();
                 if ((last + timeoutMillis) < System.currentTimeMillis()) {
+                    // 抽取RemotingUtil
                     RemotingUtil.closeChannel(next.getValue().getChannel());
                     log.warn("The broker channel expired, {} {}ms", next.getKey(), timeoutMillis);
                     this.onChannelDestroy(next.getKey());

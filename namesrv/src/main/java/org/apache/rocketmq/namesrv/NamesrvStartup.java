@@ -55,7 +55,7 @@ public class NamesrvStartup {
     public static void main(String[] args) {
         // 启动NameSrvController
         //  1. 解析配置文件
-        //  2. 创建NameSrvController TODO Figure out how controller work!
+        //  2. 创建NameSrvController
         main0(args);
         // 启动ControllerManager, ControllerManager用于选主,详细文档可以查看 /docs/cn/controller/quick_start.md
         // 有点像sentinel

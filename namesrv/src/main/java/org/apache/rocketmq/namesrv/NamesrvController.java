@@ -110,6 +110,8 @@ public class NamesrvController {
         // 2. ClientRequest处理线程池
         initiateThreadExecutors();
         // 将线程池注入到对应的server中
+        // 这边的设计比较不错，将网络通信和业务逻辑进行解耦
+        // 采用了组合模式
         registerProcessor();
         // 启动3个定时任务
         // 1. 扫描非活跃Broker
