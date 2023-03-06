@@ -54,9 +54,13 @@ public class BrokerStartup {
         start(createBrokerController(args));
     }
 
+    private static void mockBrokerConfig(BrokerController controller) {
+        controller.getBrokerConfig().setNamesrvAddr("127.0.0.1:2593");
+    }
+
     public static BrokerController start(BrokerController controller) {
         try {
-
+            mockBrokerConfig(controller);
             controller.start();
 
             String tip = "The broker[" + controller.getBrokerConfig().getBrokerName() + ", "

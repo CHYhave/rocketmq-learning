@@ -245,21 +245,26 @@ public class NamesrvController {
     }
 
     public void start() throws Exception {
+        // 1. 启动Netty Server
         this.remotingServer.start();
 
         // In test scenarios where it is up to OS to pick up an available port, set the listening port back to config
+        // 翻译：当NettyServer的端口没有设置时，服务端会设置一个可用的端口并反注入到NettyServerConfig中，让用户感知
         if (0 == nettyServerConfig.getListenPort()) {
             nettyServerConfig.setListenPort(this.remotingServer.localListenPort());
         }
 
+        //  2. 启动NettyClient,NettyClient只会连接到本地NettyServer，TODO why？
         this.remotingClient.updateNameServerAddressList(Collections.singletonList(RemotingUtil.getLocalAddress()
             + ":" + nettyServerConfig.getListenPort()));
         this.remotingClient.start();
 
+        // 3. 启动文件监听服务
         if (this.fileWatchService != null) {
             this.fileWatchService.start();
         }
 
+        // 4. 路由管理服务
         this.routeInfoManager.start();
     }
 

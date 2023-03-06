@@ -70,15 +70,22 @@ import org.apache.rocketmq.remoting.protocol.RemotingCommand;
 
 public class RouteInfoManager {
     private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
+    // 默认超时时间2分钟
     private final static long DEFAULT_BROKER_CHANNEL_EXPIRED_TIME = 1000 * 60 * 2;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Map<String/* topic */, Map<String, QueueData>> topicQueueTable;
-    private final Map<String/* brokerName */, BrokerData> brokerAddrTable;
-    private final Map<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable;
-    private final Map<BrokerAddrInfo/* brokerAddr */, BrokerLiveInfo> brokerLiveTable;
-    private final Map<BrokerAddrInfo/* brokerAddr */, List<String>/* Filter Server */> filterServerTable;
-    private final Map<String/* topic */, Map<String/*brokerName*/, TopicQueueMappingInfo>> topicQueueMappingInfoTable;
 
+    // 1. topic -> (broker name -> queueData)
+    private static  Map<String/* topic */, Map<String, QueueData>> topicQueueTable = new HashMap<>();
+    // 2. brokerName -> brokerData
+    private static  Map<String/* brokerName */, BrokerData> brokerAddrTable = new HashMap<>();
+    // 3. clusterName -> brokerName
+    private static  Map<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable = new HashMap<>();
+    // 4. brokerAddr -> brokerLiveInfo 心跳保活
+    private static  Map<BrokerAddrInfo/* brokerAddr */, BrokerLiveInfo> brokerLiveTable = new HashMap<>();
+    // 5. FilterServer是用于消息过滤的组件，这里保存FilterServer的地址。当produce产生消息时需要先经过FilterServer进行过滤
+    private static  Map<BrokerAddrInfo/* brokerAddr */, List<String>/* Filter Server */> filterServerTable = new HashMap<>();
+    // 6. 保存Broker的路由信息 topic -> brokerName -> 队列
+    private static  Map<String/* topic */, Map<String/*brokerName*/, TopicQueueMappingInfo>> topicQueueMappingInfoTable = new HashMap<>();
     private final BatchUnregistrationService unRegisterService;
 
     private final NamesrvController namesrvController;
@@ -97,6 +104,7 @@ public class RouteInfoManager {
     }
 
     public void start() {
+        // impl: org.apache.rocketmq.namesrv.routeinfo.BatchUnregistrationService
         this.unRegisterService.start();
     }
 
